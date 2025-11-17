@@ -103,6 +103,9 @@ Plug ('j-hui/fidget.nvim')
 Plug ('ravitemer/mcphub.nvim')
 Plug ('OXY2DEV/markview.nvim')
 
+Plug ( 'nvzone/volt' )
+Plug ( 'gisketch/triforce.nvim' )
+
 vim.call('plug#end')
 
 local home=os.getenv("HOME")
@@ -134,6 +137,7 @@ require('plugins.render-markdown')
 require('plugins.cmp')
 require('plugins.lspconfig')
 require('plugins.markview')
+require('plugins.triforce')
 
 -- source $HOME/.config/nvim/tabs.vim
 -- source $HOME/.config/nvim/debugger.vim
