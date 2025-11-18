@@ -22,7 +22,8 @@ Plug 'natebosch/vim-lsc-dart'
 -- Plug('leoluz/nvim-dap-go') 
 
 -- асинхронная проверка файлов во время набора текста
-Plug('neovim/nvim-lspconfig')
+-- В Neovim 0.11+ LSP встроен, nvim-lspconfig больше не нужен
+-- Plug('neovim/nvim-lspconfig')
 
 -- Синхронный автокомплит
 Plug('hrsh7th/vim-vsnip')
@@ -60,8 +61,8 @@ Plug('nvim-lua/plenary.nvim') --for fzf
 Plug('nvim-telescope/telescope.nvim', { [ 'tag' ] = '0.1.4' })
 Plug('ibhagwan/fzf-lua', {['branch'] = 'main'})
 
--- Автоматическое закрытие скобок
-Plug('jiangmiao/auto-pairs')
+-- Автоматическое закрытие скобок (современный Lua плагин)
+Plug('windwp/nvim-autopairs')
 
 -- Строка статуса
 Plug('nvim-lualine/lualine.nvim')
@@ -101,7 +102,6 @@ Plug('nvimtools/none-ls.nvim')
 Plug ('olimorris/codecompanion.nvim')
 Plug ('j-hui/fidget.nvim')
 Plug ('ravitemer/mcphub.nvim')
-Plug ('OXY2DEV/markview.nvim')
 
 Plug ( 'nvzone/volt' )
 Plug ( 'gisketch/triforce.nvim' )
@@ -123,6 +123,7 @@ require('plugins.codecompanion.codecompanion')
 require('plugins.lualine.lualine')
 require('plugins.comments')
 require('plugins.auto-sessions')
+require('plugins.autopairs')
 require('plugins.mason')
 require('plugins.telescope.telescope')
 require('plugins.gitblame')
@@ -136,7 +137,6 @@ require('plugins.neotest')
 require('plugins.render-markdown')
 require('plugins.cmp')
 require('plugins.lspconfig')
-require('plugins.markview')
 require('plugins.triforce')
 
 -- source $HOME/.config/nvim/tabs.vim

@@ -1,20 +1,47 @@
-local nvim_lsp = require'lspconfig'
+-- Neovim 0.11 LSP Configuration
+-- Documentation: https://neovim.io/doc/user/lsp.html
 
--- Diagnostic keymaps
+-- ========== DIAGNOSTICS CONFIGURATION ==========
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = '●',
+    source = 'if_many',
+  },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+  float = {
+    border = 'rounded',
+    source = 'always',
+    header = '',
+    prefix = '',
+  },
+})
+
+-- Define diagnostic signs
+local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.api.nvim_set_hl(0, hl, {})
+end
+
+-- ========== DIAGNOSTIC KEYMAPS ==========
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
--- LspAttach autocommand for buffer-local keymaps
+-- ========== LSP ATTACH AUTOCOMMAND ==========
 vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  group = vim.api.nvim_create_augroup('UserLspConfig', { clear = true }),
   callback = function(ev)
     local bufnr = ev.buf
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     
-    -- Buffer-local keymaps
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
@@ -33,48 +60,67 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<space>f', function()
       vim.lsp.buf.format({ async = false })
     end, bufopts)
+    
+    if client then
+      print(string.format('✓ LSP attached: %s (buffer %d)', client.name, bufnr))
+    end
   end,
 })
 
--- Global LSP configuration
-vim.lsp.config('*', {
-  root_markers = { '.git' },
-})
-
--- Gopls (Go)
+-- ========== GOPLS CONFIGURATION ==========
 vim.lsp.config('gopls', {
-  cmd = { 'gopls' },
+  cmd = { '/Users/poltora.dev/go/bin/gopls' },
   filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
   root_markers = { 'go.work', 'go.mod', '.git' },
-  capabilities = {
-    workspace = {
-      didChangeWatchedFiles = {
-        dynamicRegistration = true,
-      },
-    },
-  },
   settings = {
     gopls = {
       analyses = {
         unusedparams = true,
+        unusedwrite = true,
+        useany = true,
+        nilness = true,
       },
       staticcheck = true,
+      gofumpt = true,
+      completeUnimported = true,
+      usePlaceholders = false,
+      semanticTokens = true,
     },
   },
 })
 
--- Rust Analyzer
+-- Enable gopls on VimEnter
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.lsp.enable('gopls')
+  end,
+  once = true,
+})
+
+-- Enable gopls on FileType as backup
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'go', 'gomod', 'gowork', 'gotmpl' },
+  callback = function(args)
+    vim.defer_fn(function()
+      if #vim.lsp.get_clients({ bufnr = args.buf, name = 'gopls' }) == 0 then
+        vim.lsp.enable('gopls')
+      end
+    end, 100)
+  end,
+})
+
+-- ========== RUST ANALYZER CONFIGURATION ==========
 vim.lsp.config('rust_analyzer', {
   cmd = { 'rust-analyzer' },
   filetypes = { 'rust' },
   root_markers = { 'Cargo.toml', 'rust-project.json', '.git' },
   settings = {
-    ["rust-analyzer"] = {
+    ['rust-analyzer'] = {
       imports = {
         granularity = {
-          group = "module",
+          group = 'module',
         },
-        prefix = "self",
+        prefix = 'self',
       },
       cargo = {
         buildScripts = {
@@ -88,22 +134,38 @@ vim.lsp.config('rust_analyzer', {
   },
 })
 
--- Lua Language Server
+-- Enable rust-analyzer on VimEnter
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.lsp.enable('rust_analyzer')
+  end,
+  once = true,
+})
+
+-- Enable rust-analyzer on FileType as backup
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'rust',
+  callback = function(args)
+    vim.defer_fn(function()
+      if #vim.lsp.get_clients({ bufnr = args.buf, name = 'rust_analyzer' }) == 0 then
+        vim.lsp.enable('rust_analyzer')
+      end
+    end, 100)
+  end,
+})
+
+-- ========== LUA LANGUAGE SERVER CONFIGURATION ==========
 vim.lsp.config('lua_ls', {
   cmd = { 'lua-language-server' },
   filetypes = { 'lua' },
   root_markers = { '.luarc.json', '.luarc.jsonc', '.git' },
-  on_init = function(client)
-    if client.workspace_folders then
-      local path = client.workspace_folders[1].name
-      if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
-        return
-      end
-    end
-
-    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+  settings = {
+    Lua = {
       runtime = {
         version = 'LuaJIT',
+      },
+      diagnostics = {
+        globals = { 'vim' },
       },
       workspace = {
         checkThirdParty = false,
@@ -111,77 +173,26 @@ vim.lsp.config('lua_ls', {
           vim.env.VIMRUNTIME,
         },
       },
-    })
-  end,
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { 'vim' },
-      },
     },
   },
 })
 
--- Dart
-vim.lsp.config('dartls', {
-  cmd = { 'dart', 'language-server', '--protocol=lsp' },
-  filetypes = { 'dart' },
-  root_markers = { 'pubspec.yaml', '.git' },
+-- Enable lua_ls on VimEnter
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.lsp.enable('lua_ls')
+  end,
+  once = true,
 })
 
-vim.g.sc_auto_map = true
-
--- Pyright (Python)
-vim.lsp.config('pyright', {
-  cmd = { 'pyright-langserver', '--stdio' },
-  filetypes = { 'python' },
-  root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
-})
-
--- Volar (Vue)
-vim.lsp.config('volar', {
-  cmd = { 'vue-language-server', '--stdio' },
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-  root_markers = { 'package.json', '.git' },
-})
-
--- JSON Language Server
-vim.lsp.config('jsonls', {
-  cmd = { 'vscode-json-language-server', '--stdio' },
-  filetypes = { 'json', 'jsonc' },
-  root_markers = { '.git' },
-})
-
--- Enable all configured LSP servers
-vim.lsp.enable('gopls')
-vim.lsp.enable('rust_analyzer')
-vim.lsp.enable('lua_ls')
-vim.lsp.enable('dartls')
-vim.lsp.enable('pyright')
-vim.lsp.enable('volar')
-vim.lsp.enable('jsonls')
-
--- null-ls configuration (если используется)
-local null_ls_ok, null_ls = pcall(require, "null-ls")
-if null_ls_ok then
-  local fixjson = {
-    method = null_ls.methods.FORMATTING,
-    filetypes = { "json" },
-    generator = null_ls.generator({
-      command = "fixjson",
-      args = { "--stdin" },
-      to_stdin = true,
-    }),
-  }
-
-  null_ls.setup({
-    sources = {
-      fixjson,
-    },
-  })
-end
-
--- Disable virtual text for diagnostics
-vim.diagnostic.config({
-  virtual_text = false,
+-- Enable lua_ls on FileType as backup
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'lua',
+  callback = function(args)
+    vim.defer_fn(function()
+      if #vim.lsp.get_clients({ bufnr = args.buf, name = 'lua_ls' }) == 0 then
+        vim.lsp.enable('lua_ls')
+      end
+    end, 100)
+  end,
 })
