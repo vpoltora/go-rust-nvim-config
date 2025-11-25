@@ -196,3 +196,76 @@ vim.api.nvim_create_autocmd('FileType', {
     end, 100)
   end,
 })
+
+-- ========== PYTHON LSP SERVER CONFIGURATION ==========
+vim.lsp.config('pylsp', {
+  cmd = { '/Users/poltora.dev/.local/share/nvim/mason/bin/pylsp' },
+  filetypes = { 'python' },
+  root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
+  settings = {
+    pylsp = {
+      plugins = {
+        pycodestyle = {
+          ignore = { 'W391' },
+          maxLineLength = 100,
+        },
+        autopep8 = {
+          enabled = true,
+        },
+        flake8 = {
+          enabled = false,
+        },
+        pylint = {
+          enabled = false,
+        },
+        pyflakes = {
+          enabled = true,
+        },
+        mccabe = {
+          enabled = true,
+          threshold = 15,
+        },
+        rope_completion = {
+          enabled = true,
+        },
+        jedi_completion = {
+          enabled = true,
+          include_params = true,
+        },
+        jedi_hover = {
+          enabled = true,
+        },
+        jedi_references = {
+          enabled = true,
+        },
+        jedi_signature_help = {
+          enabled = true,
+        },
+        jedi_symbols = {
+          enabled = true,
+          all_scopes = true,
+        },
+      },
+    },
+  },
+})
+
+-- Enable pylsp on VimEnter
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.lsp.enable('pylsp')
+  end,
+  once = true,
+})
+
+-- Enable pylsp on FileType as backup
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'python',
+  callback = function(args)
+    vim.defer_fn(function()
+      if #vim.lsp.get_clients({ bufnr = args.buf, name = 'pylsp' }) == 0 then
+        vim.lsp.enable('pylsp')
+      end
+    end, 100)
+  end,
+})
