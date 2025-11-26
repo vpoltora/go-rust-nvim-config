@@ -10,19 +10,14 @@ require('lspsaga').setup({
   },
   symbol_in_winbar = {
     enable = true,
-    separator = ' > ',
+    separator = ' › ',
     show_file = true,
     folder_level = 2,
     hide_keyword = false,
-    color_mode = true,
-    delay = 300,
   },
   ui = {
     border = 'rounded',
     winblend = 0,
-    devicon = false,     -- Disable file icons
-    foldericon = false,  -- Disable folder icons
-    winbar_prefix = '',
     colors = {
       normal_bg = '#FCFCFC',
     },
@@ -34,13 +29,28 @@ vim.api.nvim_set_hl(0, 'WinBar', { bg = '#FCFCFC' })
 vim.api.nvim_set_hl(0, 'WinBarNC', { bg = '#FCFCFC' })
 vim.api.nvim_set_hl(0, 'SagaWinbarSep', { fg = '#999999', bg = '#FCFCFC' })
 
+-- Hide folder icons (make them invisible)
+vim.api.nvim_set_hl(0, 'SagaWinbarFolderIcon', { fg = '#FCFCFC', bg = '#FCFCFC' })
+
 -- Folders in gray (like Cursor)
 vim.api.nvim_set_hl(0, 'SagaWinbarFolder', { fg = '#999999', bg = '#FCFCFC' })
 
 -- Files in blue/cyan (like Cursor)
 vim.api.nvim_set_hl(0, 'SagaWinbarFile', { fg = '#3C7CAB', bg = '#FCFCFC' })
+-- Hide file icons (make them invisible)
+vim.api.nvim_set_hl(0, 'SagaWinbarFileIcon', { fg = '#FCFCFC', bg = '#FCFCFC' })
 
--- Functions and methods in orange
+-- Force highlights on ColorScheme change to prevent overrides
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_set_hl(0, 'SagaWinbarFolderIcon', { fg = '#FCFCFC', bg = '#FCFCFC' })
+    vim.api.nvim_set_hl(0, 'SagaWinbarFileIcon', { fg = '#FCFCFC', bg = '#FCFCFC' })
+    vim.api.nvim_set_hl(0, 'SagaWinbarSep', { fg = '#999999', bg = '#FCFCFC' })
+  end,
+})
+
+-- Functions and methods in orange (like M.setup in Cursor)
 vim.api.nvim_set_hl(0, 'SagaWinbarFunction', { fg = '#DB704B', bg = '#FCFCFC' })
 vim.api.nvim_set_hl(0, 'SagaWinbarMethod', { fg = '#DB704B', bg = '#FCFCFC' })
 
@@ -53,7 +63,7 @@ vim.api.nvim_set_hl(0, 'SagaWinbarNamespace', { fg = '#206595', bg = '#FCFCFC' }
 vim.api.nvim_set_hl(0, 'SagaWinbarPackage', { fg = '#206595', bg = '#FCFCFC' })
 vim.api.nvim_set_hl(0, 'SagaWinbarEnum', { fg = '#206595', bg = '#FCFCFC' })
 
--- Variables and properties
+-- Variables and properties (dark text like 'fg' in Cursor)
 vim.api.nvim_set_hl(0, 'SagaWinbarVariable', { fg = '#141414', bg = '#FCFCFC' })
 vim.api.nvim_set_hl(0, 'SagaWinbarProperty', { fg = '#6049B3', bg = '#FCFCFC' })
 vim.api.nvim_set_hl(0, 'SagaWinbarKey', { fg = '#141414', bg = '#FCFCFC' })
