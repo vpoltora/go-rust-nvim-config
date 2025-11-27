@@ -3,28 +3,14 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin')
 
-Plug ('~/plugins/present.nvim')
-Plug ('~/.config/nvim/cursor-light.nvim')
+Plug('vpoltora/cursor-light.nvim')
+
+Plug('tpope/vim-surround')
 
 -- language support
 Plug('nvim-treesitter/nvim-treesitter', {[ 'do' ] = ':TSUpdate'})
-Plug('tpope/vim-surround')
 --go
 Plug('fatih/vim-go', { [ 'do' ] = ':GoUpdateBinaries' })
---dart
-Plug 'dart-lang/dart-vim-plugin'
-Plug 'thosakwe/vim-flutter'
-Plug 'natebosch/vim-lsc'
-Plug 'natebosch/vim-lsc-dart'
-
--- for debugging
--- Plug('mfussenegger/nvim-dap') 
--- Plug('rcarriga/nvim-dap-ui') 
--- Plug('leoluz/nvim-dap-go') 
-
--- асинхронная проверка файлов во время набора текста
--- В Neovim 0.11+ LSP встроен, nvim-lspconfig больше не нужен
--- Plug('neovim/nvim-lspconfig')
 
 -- Синхронный автокомплит
 Plug('hrsh7th/vim-vsnip')
@@ -40,49 +26,41 @@ Plug('numToStr/Comment.nvim')
 
 -- themes
 Plug('morhetz/gruvbox')
-Plug('rebelot/kanagawa.nvim')
-Plug('uloco/bluloco.nvim')
-Plug('rktjmp/lush.nvim')
-Plug('folke/tokyonight.nvim')
-Plug('rafi/awesome-vim-colorschemes')
-Plug('catppuccin/nvim')
-Plug('scottmckendry/cyberdream.nvim')
-Plug('EdenEast/nightfox.nvim')
 
--- Вкладки файлов
+-- tabs with icons
 Plug('romgrk/barbar.nvim')
 -- for file icons
 Plug('kyazdani42/nvim-web-devicons')
 
--- Дерево файлов
+-- files tree
 Plug('kyazdani42/nvim-tree.lua')
 
--- Telescope
+-- telescope
 Plug('nvim-lua/plenary.nvim') --for fzf
 Plug('nvim-telescope/telescope.nvim', { [ 'tag' ] = '0.1.4' })
 Plug('ibhagwan/fzf-lua', {['branch'] = 'main'})
 
--- Автоматическое закрытие скобок (современный Lua плагин)
+-- auto pairs plugin
 Plug('windwp/nvim-autopairs')
 
--- Строка статуса
+-- status line
 Plug('nvim-lualine/lualine.nvim')
 
--- история гита
+-- git history
 Plug('f-person/git-blame.nvim')
 
--- подсветка ошибок
+-- plugin for highlighting errors and warnings
 Plug('folke/trouble.nvim')
 
-Plug('mg979/vim-visual-multi', {[ 'branch' ] = 'master'})
-
--- плагины для работы с тестами
+-- for tests
 Plug('fredrikaverpil/neotest-golang')
 Plug('antoinemadec/FixCursorHold.nvim')
 Plug('nvim-neotest/nvim-nio')
 Plug('nvim-neotest/neotest')
 
 Plug('rmagatti/auto-session')
+
+Plug('mg979/vim-visual-multi', {[ 'branch' ] = 'master'})
 
 Plug('nvimdev/lspsaga.nvim')
 
@@ -113,11 +91,11 @@ local home=os.getenv("HOME")
 package.path = home .. "/.config/nvim/?.lua;" .. package.path
 
 -- common settings 
-require"common" -- +
+require"common"
 -- themes
-require"theme" -- +
+require"theme"
 -- custom keymaps
-require"combinations" -- +
+require"combinations"
 
 -- plugins configs
 require('plugins.codecompanion.codecompanion')
@@ -140,8 +118,4 @@ require('plugins.cmp')
 require('plugins.lspconfig')
 require('plugins.triforce')
 
--- source $HOME/.config/nvim/tabs.vim
--- source $HOME/.config/nvim/debugger.vim
--- require"avanteplug"
--- require"dev"
 

@@ -36,7 +36,6 @@ require'nvim-treesitter.configs'.setup {
 	auto_install = true,
 	highlight = { 
 		enable = true,
-		-- Дополнительные настройки для производительности
 		additional_vim_regex_highlighting = false,
 	},
 	incremental_selection = { 
