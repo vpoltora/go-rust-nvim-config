@@ -14,8 +14,13 @@
 -- vim.cmd.colorscheme("catppuccin-latte")
 -- vim.o.background = "light"
 
--- active - Cursor Light theme
-local cursor_light = require('cursor-light-theme')
-cursor_light.setup()
-vim.o.background = "light"
+-- active - Cursor Light theme (using packaged version)
+require('cursor-light').setup({
+  ui = true,
+  integrations = {
+    lspsaga = true,
+    nvim_tree = true,
+  },
+})
+vim.cmd.colorscheme('cursor-light')
 

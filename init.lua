@@ -4,6 +4,7 @@ local Plug = vim.fn['plug#']
 vim.call('plug#begin')
 
 Plug ('~/plugins/present.nvim')
+Plug ('~/.config/nvim/cursor-light.nvim')
 
 -- language support
 Plug('nvim-treesitter/nvim-treesitter', {[ 'do' ] = ':TSUpdate'})
