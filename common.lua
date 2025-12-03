@@ -18,4 +18,8 @@ vim.o.foldlevel = 20
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
+-- базовые номера строк (могут быть переопределены кастомной колонкой)
+vim.opt.number = true
+vim.opt.signcolumn = "yes"  -- колонка для breakpoints, git signs, diagnostics
+
 

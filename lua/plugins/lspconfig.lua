@@ -67,13 +67,46 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+local function gopls_build_flags()
+  -- If you open a file excluded by Go build tags (e.g. `//go:build integration`),
+  -- gopls may treat it as "not in any package", and LSP features degrade.
+  --
+  -- We default to enabling the tags that exist in this repo so tagged *_test.go
+  -- files still get full type-checking and navigation.
+  --
+  -- Override per-shell/per-project if needed:
+  --   export GOPLS_BUILD_TAGS='integration,db'
+  -- or:
+  --   export NVIM_GOPLS_BUILD_TAGS='integration,db'
+  local tags = vim.env.GOPLS_BUILD_TAGS or vim.env.NVIM_GOPLS_BUILD_TAGS
+
+  if tags == nil or tags == '' then
+    tags = 'integration,db,external,manual'
+  end
+
+  -- Support accidental whitespace-separated lists.
+  tags = tags:gsub('%s+', ',')
+  tags = tags:gsub('^,+', ''):gsub(',+$', '')
+
+  if tags == '' then
+    return {}
+  end
+
+  if tags:match('^%-tags=') then
+    return { tags }
+  end
+
+  return { '-tags=' .. tags }
+end
+
 -- ========== GOPLS CONFIGURATION ==========
 vim.lsp.config('gopls', {
-  cmd = { '/Users/poltora.dev/go/bin/gopls' },
+  cmd = { '/Users/itxor/.gvm/pkgsets/go1.24.4/global/bin/gopls' },
   filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
   root_markers = { 'go.work', 'go.mod', '.git' },
   settings = {
     gopls = {
+      buildFlags = gopls_build_flags(),
       analyses = {
         unusedparams = true,
         unusedwrite = true,

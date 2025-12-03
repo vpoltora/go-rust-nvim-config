@@ -78,6 +78,19 @@ Plug ( 'HakonHarnes/img-clip.nvim' )
 
 Plug('nvimtools/none-ls.nvim')
 
+-- DAP (Debug Adapter Protocol) for debugging
+Plug('mfussenegger/nvim-dap')
+Plug('leoluz/nvim-dap-go')
+Plug('rcarriga/nvim-dap-ui')
+Plug('theHamsta/nvim-dap-virtual-text')
+
+-- Git merge conflict resolution (3-way merge like JetBrains)
+Plug('sindrets/diffview.nvim')
+Plug('akinsho/git-conflict.nvim')
+
+Plug('esmuellert/vscode-diff.nvim', {['on'] = 'CodeDiff'})
+Plug('MunifTanjim/nui.nvim')
+
 Plug ('olimorris/codecompanion.nvim')
 Plug ('j-hui/fidget.nvim')
 Plug ('ravitemer/mcphub.nvim')
@@ -117,5 +130,12 @@ require('plugins.render-markdown')
 require('plugins.cmp')
 require('plugins.lspconfig')
 require('plugins.triforce')
+require('plugins.dap')
+require('plugins.diffview')
+require('plugins.git-conflict')
+
+-- Custom UI settings
+-- Uncomment the line below to enable custom line column with separator
+-- require('plugins.custom-linecolumn').setup()
 
 

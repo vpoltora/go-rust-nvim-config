@@ -7,8 +7,8 @@
 -- vim.o.background = "light"
 
 -- previous 
--- vim.cmd.colorscheme("gruvbox")
--- vim.o.background = "light"
+vim.cmd.colorscheme("gruvbox")
+vim.o.background = "light"
 
 -- previous catppuccin
 -- vim.cmd.colorscheme("catppuccin-latte")
@@ -16,10 +16,10 @@
 
 -- active - Cursor Light theme (using packaged version)
 require('cursor-light').setup({
-  ui = true,
+  ui = false, -- UI customizations moved to custom-linecolumn.lua
   integrations = {
     lspsaga = true,
-    nvim_tree = true,
+    nvim_tree = false, -- disabled to prevent column manipulations
   },
 })
 vim.cmd.colorscheme('cursor-light')
