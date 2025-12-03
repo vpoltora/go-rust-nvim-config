@@ -69,7 +69,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 -- ========== GOPLS CONFIGURATION ==========
 vim.lsp.config('gopls', {
-  cmd = { '/Users/poltora.dev/go/bin/gopls' },
+  cmd = { '/Users/itxor/.gvm/pkgsets/go1.24.4/global/bin/gopls' },
   filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
   root_markers = { 'go.work', 'go.mod', '.git' },
   settings = {

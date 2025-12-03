@@ -86,3 +86,20 @@ keymap('n', '<Leader>,m', '<cmd>GoFillStruct<cr>', default_opts)
 
 -- lsp buf format
 keymap('n', '<Leader>bf', ':lua vim.lsp.buf.format()<cr>', default_opts)
+
+-- DAP keybindings are defined in lua/plugins/dap.lua:
+-- F5: Continue/Start debugging
+-- F10: Step over
+-- F11: Step into  
+-- F12: Step out
+-- <Leader>db: Toggle breakpoint
+-- <Leader>dB: Conditional breakpoint
+-- <Leader>dl: Log point
+-- <Leader>dt: Debug test under cursor (Go)
+-- <Leader>dT: Debug last test
+-- <Leader>du: Toggle debug UI
+-- <Leader>dr: Open debug REPL
+-- <Leader>dR: Run last debug config
+-- <Leader>dx: Terminate debugging
+-- <Leader>de: Evaluate expression
+
