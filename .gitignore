@@ -1,0 +1,30 @@
+# Neovim swap, backup and undo files
+*.swp
+*.swo
+*~
+*.un~
+.nvimlog
+
+# Session and state
+Session.vim
+.netrwhist
+*shada
+
+# OS-specific files
+.DS_Store
+.DB_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Package managers and dependencies
+plugin/
+plugged/
+lazy/
+mason/
+pack/
+node_modules/
